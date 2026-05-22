@@ -492,19 +492,76 @@ function makeSection(icon, title, accentColor, contentWidgets, startOpen) {
 // SECTION 4: REMOTE SENSING ANALYSIS (Accordion Section)
 // ============================================================================
 
-// ── Date Slider ─────────────────────────────────────────────────────────────
-var dateSlider = ui.DateSlider({
-  start: '2022-01-01',
-  end: '2025-12-31',
-  value: ['2024-01-01', '2024-12-31'],
-  period: 15,
-  onChange: function(range) {
-    selectedStart = range.start().format('YYYY-MM-dd').getInfo();
-    selectedEnd = range.end().format('YYYY-MM-dd').getInfo();
+// ── Date Range Controls (At Will Selection) ──────────────────────────────────
+var startBox = ui.Textbox({
+  value: selectedStart,
+  placeholder: 'YYYY-MM-DD',
+  onChange: function(text) {
+    selectedStart = text;
+    statusLbl.setValue('● Date Range updated: ' + selectedStart + ' → ' + selectedEnd);
+  },
+  style: { width: '100px' }
+});
+
+var endBox = ui.Textbox({
+  value: selectedEnd,
+  placeholder: 'YYYY-MM-DD',
+  onChange: function(text) {
+    selectedEnd = text;
+    statusLbl.setValue('● Date Range updated: ' + selectedStart + ' → ' + selectedEnd);
+  },
+  style: { width: '100px' }
+});
+
+// Dropdown for quick seasonal & annual presets
+var presetSelect = ui.Select({
+  items: [
+    'Custom (Enter dates below)',
+    'Full Year 2024',
+    'Dry Season 2024 (May-Oct)',
+    'Wet Season 2024 (Nov-Apr)',
+    'Full Year 2023',
+    'Dry Season 2023 (May-Oct)',
+    'Wet Season 2023 (Nov-Apr)',
+    'Full Year 2022'
+  ],
+  placeholder: 'Quick Date Presets',
+  value: 'Full Year 2024',
+  onChange: function(key) {
+    if (key === 'Full Year 2024') {
+      selectedStart = '2024-01-01'; selectedEnd = '2024-12-31';
+    } else if (key === 'Dry Season 2024 (May-Oct)') {
+      selectedStart = '2024-05-01'; selectedEnd = '2024-10-31';
+    } else if (key === 'Wet Season 2024 (Nov-Apr)') {
+      selectedStart = '2024-11-01'; selectedEnd = '2025-04-30';
+    } else if (key === 'Full Year 2023') {
+      selectedStart = '2023-01-01'; selectedEnd = '2023-12-31';
+    } else if (key === 'Dry Season 2023 (May-Oct)') {
+      selectedStart = '2023-05-01'; selectedEnd = '2023-10-31';
+    } else if (key === 'Wet Season 2023 (Nov-Apr)') {
+      selectedStart = '2023-11-01'; selectedEnd = '2024-04-30';
+    } else if (key === 'Full Year 2022') {
+      selectedStart = '2022-01-01'; selectedEnd = '2022-12-31';
+    }
+    
+    // Update textboxes visually to match preset
+    if (key !== 'Custom (Enter dates below)') {
+      startBox.setValue(selectedStart, false);
+      endBox.setValue(selectedEnd, false);
+    }
     statusLbl.setValue('● Date: ' + selectedStart + ' → ' + selectedEnd);
   },
-  style: { margin: '8px 0', stretch: 'horizontal' }
+  style: { stretch: 'horizontal', margin: '4px 0' }
 });
+
+var dateInputsPanel = ui.Panel({
+  layout: ui.Panel.Layout.Flow('horizontal'),
+  style: { stretch: 'horizontal', margin: '4px 0', backgroundColor: '#ffffff' }
+});
+dateInputsPanel.add(ui.Label('Start:', { fontSize: '11px', color: '#64748b', margin: '8px 4px 0 0' }));
+dateInputsPanel.add(startBox);
+dateInputsPanel.add(ui.Label('End:', { fontSize: '11px', color: '#64748b', margin: '8px 4px 0 8px' }));
+dateInputsPanel.add(endBox);
 
 // ── Index Selection Checkboxes ──────────────────────────────────────────────
 var idxLabel = ui.Label('Water Quality Indices', {
@@ -713,8 +770,9 @@ var runBtn = ui.Button({
 
 // ── Build Accordion Section ─────────────────────────────────────────────────
 var rsSection = makeSection('📡', 'Remote Sensing Analysis', '#4338ca', [
-  ui.Label('Date Range', { fontSize: '11px', fontWeight: 'bold', color: '#6366f1', margin: '0 0 4px 0' }),
-  dateSlider,
+  ui.Label('Date Range Select', { fontSize: '11px', fontWeight: 'bold', color: '#6366f1', margin: '0 0 4px 0' }),
+  presetSelect,
+  dateInputsPanel,
   idxLabel, chkNDWI, chkNDTI, chkNDCI, chkTSI, chkAWEIn, chkSABI, chkFAI, chkCI,
   vegLabel, chkEVI, chkMSAVI,
   riverLabel, chkRivers, chkUseRivers,
