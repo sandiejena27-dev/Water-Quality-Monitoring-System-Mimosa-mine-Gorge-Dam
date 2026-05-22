@@ -148,9 +148,13 @@ function launchEngine() {
 
   // Centroid of all 34 sample points from mine field survey KML
   var DAM_CENTER = ee.Geometry.Point([29.8385, -20.3130]);
-  var DEFAULT_ROI = DAM_CENTER.buffer(5000);
+  var DEFAULT_ROI = DAM_CENTER.buffer(5800); // Added 800 meters to the original 5000m radius (now 5800m)
   // Shared Drive folder: https://drive.google.com/drive/folders/1bapvthKzInFVloehVqh2QdKO74QPyRl4
   var DRIVE_FOLDER = 'Mimosa_WQ_Exports';
+
+  // Upload your shapefile asset to GEE and update this path
+  var RIVERS_ASSET = 'users/your_username/Gorge_dam_rivers';
+  var riverFeatures = ee.FeatureCollection(RIVERS_ASSET);
 
   // Active analysis geometry (changes when user draws a polygon)
   var activeROI = DEFAULT_ROI;
@@ -342,7 +346,8 @@ function launchEngine() {
   var chkNDCI = ui.Checkbox('NDCI — Chlorophyll-a (Mishra)', false);
   var chkTSI = ui.Checkbox('TSI — Trophic State (Carlson)', false);
   var chkAWEIn = ui.Checkbox('AWEIn — Water Detection (Feyisa)', false);
-  stage1.add(chkNDWI).add(chkNDTI).add(chkNDCI).add(chkTSI).add(chkAWEIn);
+  var useRiverLayer = ui.Checkbox('Use uploaded river shapefile as analysis region', false);
+  stage1.add(chkNDWI).add(chkNDTI).add(chkNDCI).add(chkTSI).add(chkAWEIn).add(useRiverLayer);
 
   // ── Stage 1 Status ──────────────────────────────────────────────────────────
   var stage1Status = ui.Label('⏳ Waiting for user to run indices...', S.pending);
@@ -359,6 +364,9 @@ function launchEngine() {
       if (drawnLayers.length() > 0) {
         activeROI = drawnLayers.get(0).toGeometry();
         globalStatus.setValue('Using drawn polygon as analysis region.');
+      } else if (useRiverLayer.getValue()) {
+        activeROI = riverFeatures.geometry();
+        globalStatus.setValue('Using uploaded river shapefile as analysis region.');
       } else {
         activeROI = DEFAULT_ROI;
       }
@@ -380,10 +388,11 @@ function launchEngine() {
       // Water mask (pixels where NDWI > 0 are water)
       var waterMask = withIndices.select('NDWI').gt(0);
 
-      // ── Add RS input layers to the map ──────────────────────────────────
+      // ── Add RS input layers to the map (Commented out to improve load/rendering speed) ──
       // Clear previous layers
       mapPanel.layers().reset();
 
+      /*
       mapPanel.addLayer(
         composite, { bands: ['B4', 'B3', 'B2'], min: 0, max: 0.3 },
         '[RS] True Color (B4-B3-B2)', true
@@ -396,6 +405,7 @@ function launchEngine() {
         composite, { bands: ['B12', 'B8', 'B4'], min: 0, max: 0.3 },
         '[RS] SWIR Composite (B12-B8-B4)', false
       );
+      */
 
       // ── Add selected index layers ───────────────────────────────────────
       if (chkNDWI.getValue()) {
@@ -1010,6 +1020,11 @@ function launchEngine() {
     ee.Image().paint(ee.FeatureCollection(DEFAULT_ROI), 0, 2),
     { palette: ['#818cf8'] },
     'Gorge Dam ROI Boundary', true
+  );
+  mapPanel.addLayer(
+    riverFeatures,
+    { color: '#00ffff' },
+    'Uploaded Rivers / Tributaries', false
   );
 
   print('✅ Mimosa Mine RS Engine (v4.0) loaded successfully.');

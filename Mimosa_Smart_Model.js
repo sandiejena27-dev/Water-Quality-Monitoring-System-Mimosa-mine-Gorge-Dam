@@ -99,23 +99,22 @@
  * CI    — Contamination Index (Custom for Mining Environments)
  *         Formula: (NDTI + (1 - NDWI)) / 2
  *         Range: 0 (Clean) to 1 (Contaminated)
- *         Reference: EMA S.I. 274/2000 Zimbabwe
+ *         Reference: Mimosa Mine Water Quality Standards (adapted from EMA S.I. 274/2000)
  *
  * ============================================================================
- * REGULATORY STANDARDS
+ * WATER QUALITY ASSESSMENT STANDARDS (MIMOSA INTERNAL STANDARDS)
  * ============================================================================
  *
- * Zimbabwe Environmental Management Agency (EMA)
- * Statutory Instrument 274 of 2000 (Water Quality Standards)
+ * Mimosa Mining Company Internal Potable Water Standards
  *
- * Parameter        | EMA Limit  | Class
- * ─────────────────|────────────|────────────
- * TSS              | <25 mg/L   | Compliant
- * TSS              | 25-50 mg/L | Cautionary
- * TSS              | >50 mg/L   | Hazardous
- * pH               | 6.0 - 9.0  | Acceptable
- * Turbidity        | <5 NTU     | Compliant
- * Chlorophyll-a    | <10 µg/L   | Compliant
+ * Parameter        | Mimosa Limit   | Class
+ * ─────────────────|────────────────|──────────────
+ * TSS              | 0 - 1 mg/L     | Compliant
+ * pH               | 6.5 - 7.5      | Compliant
+ * E.coli           | 0 cfu/100mL    | Compliant
+ * Total Coliform   | <1000 cfu/100mL| Compliant
+ * Free Chlorine    | 0.2 - 5 mg/L   | Compliant
+ * Conductivity (EC)| <400 µS/cm     | Compliant
  *
  * ============================================================================
  */
@@ -198,12 +197,12 @@ function boot() {
 
 /**
  * Primary study area: Gorge Dam at Mimosa Platinum Mine
- * Coordinates: 29.8253°E, 20.3300°S
- * Buffer: 4000m to capture full dam extent and surrounding
+ * Coordinates: 29.84462°E, 20.31911°S
+ * Buffer: 5000m to capture full dam extent and surrounding
  * influence zone including tailings, inlet streams, and outflow
  */
-var DAM_CENTER = ee.Geometry.Point([29.8253, -20.3300]);
-var DEFAULT_ROI = DAM_CENTER.buffer(4000);
+var DAM_CENTER = ee.Geometry.Point([29.84462, -20.31911]);
+var DEFAULT_ROI = DAM_CENTER.buffer(5800); // Added 800 meters to the original 5000m radius (now 5800m)
 
 // Shared Drive folder for export pipeline
 // URL: https://drive.google.com/drive/folders/1bapvthKzInFVloehVqh2QdKO74QPyRl4
@@ -232,29 +231,21 @@ var currentCollection = null;
  * After export, merge the CSV with your laboratory measurements.
  */
 var samplePoints = ee.FeatureCollection([
-  ee.Feature(ee.Geometry.Point([29.8258, -20.3290]), {id: 'SP01', label: 'Dam Center',       zone: 'core'}),
-  ee.Feature(ee.Geometry.Point([29.8270, -20.3295]), {id: 'SP02', label: 'Dam East',         zone: 'core'}),
-  ee.Feature(ee.Geometry.Point([29.8240, -20.3295]), {id: 'SP03', label: 'Dam West',         zone: 'core'}),
-  ee.Feature(ee.Geometry.Point([29.8253, -20.3275]), {id: 'SP04', label: 'Dam North',        zone: 'core'}),
-  ee.Feature(ee.Geometry.Point([29.8253, -20.3315]), {id: 'SP05', label: 'Dam South',        zone: 'core'}),
-  ee.Feature(ee.Geometry.Point([29.8230, -20.3310]), {id: 'SP06', label: 'Inlet',            zone: 'inflow'}),
-  ee.Feature(ee.Geometry.Point([29.8275, -20.3310]), {id: 'SP07', label: 'Outlet',           zone: 'outflow'}),
-  ee.Feature(ee.Geometry.Point([29.8220, -20.3340]), {id: 'SP08', label: 'Tailings Adjacent',zone: 'risk'}),
-  ee.Feature(ee.Geometry.Point([29.8245, -20.3260]), {id: 'SP09', label: 'Upstream',         zone: 'reference'}),
-  ee.Feature(ee.Geometry.Point([29.8260, -20.3340]), {id: 'SP10', label: 'Downstream',       zone: 'reference'}),
+  ee.Feature(ee.Geometry.Point([29.84381885600004, -20.31754411099996]), {id: 'SP01', label: 'Testing Point 1', zone: 'core'}),
+  ee.Feature(ee.Geometry.Point([29.842569424000033, -20.31860980299996]), {id: 'SP02', label: 'Testing Point 2', zone: 'core'}),
+  ee.Feature(ee.Geometry.Point([29.84402097000003, -20.320410454999944]), {id: 'SP03', label: 'Testing Point 3', zone: 'core'}),
+  ee.Feature(ee.Geometry.Point([29.84560113300006, -20.31899565699996]), {id: 'SP04', label: 'Testing Point 4', zone: 'core'}),
+  ee.Feature(ee.Geometry.Point([29.847088369000062, -20.320006020999926]), {id: 'SP05', label: 'Testing Point 5', zone: 'core'}),
 ]);
 
 // Simulated in-situ training labels for preliminary classification
 // Status: 0 = Compliant, 1 = Caution, 2 = Hazardous
 var trainingPoints = ee.FeatureCollection([
-  ee.Feature(ee.Geometry.Point([29.8258, -20.3290]), {status: 0}),
-  ee.Feature(ee.Geometry.Point([29.8270, -20.3295]), {status: 0}),
-  ee.Feature(ee.Geometry.Point([29.8240, -20.3295]), {status: 0}),
-  ee.Feature(ee.Geometry.Point([29.8253, -20.3275]), {status: 0}),
-  ee.Feature(ee.Geometry.Point([29.8230, -20.3310]), {status: 1}),
-  ee.Feature(ee.Geometry.Point([29.8275, -20.3310]), {status: 1}),
-  ee.Feature(ee.Geometry.Point([29.8220, -20.3340]), {status: 2}),
-  ee.Feature(ee.Geometry.Point([29.8260, -20.3340]), {status: 1}),
+  ee.Feature(ee.Geometry.Point([29.84381885600004, -20.31754411099996]), {status: 0}),
+  ee.Feature(ee.Geometry.Point([29.842569424000033, -20.31860980299996]), {status: 1}),
+  ee.Feature(ee.Geometry.Point([29.84402097000003, -20.320410454999944]), {status: 1}),
+  ee.Feature(ee.Geometry.Point([29.84560113300006, -20.31899565699996]), {status: 0}),
+  ee.Feature(ee.Geometry.Point([29.847088369000062, -20.320006020999926]), {status: 2}),
 ]);
 
 
@@ -559,7 +550,8 @@ var runBtn = ui.Button({
     // Clear map and add layers
     mapView.layers().reset();
 
-    // ── RS INPUT LAYERS (always added) ──────────────────────────────────
+    // ── RS INPUT LAYERS (Commented out to improve load/rendering speed) ──
+    /*
     mapView.addLayer(
       composite, { bands: ['B4','B3','B2'], min: 0, max: 0.3 },
       'True Color (B4-B3-B2)', true
@@ -572,6 +564,7 @@ var runBtn = ui.Button({
       composite, { bands: ['B12','B8','B4'], min: 0, max: 0.3 },
       'SWIR Composite (B12-B8-B4)', false
     );
+    */
 
     // ── WQ INDEX LAYERS (user-selected) ─────────────────────────────────
     var indexPalettes = {
@@ -663,11 +656,11 @@ var runBtn = ui.Button({
 
       floater.add(ui.Label(interpTxt, { fontSize: '9px', color: '#94a3b8', margin: '6px 0 2px 0' }));
 
-      // Overall EMA status
-      var emaStatus = ciVal < 0.3 ? '✓ COMPLIANT' : ciVal < 0.6 ? '⚠ CAUTION' : '✕ HAZARDOUS';
-      var emaColor = ciVal < 0.3 ? '#10b981' : ciVal < 0.6 ? '#f59e0b' : '#ef4444';
-      floater.add(ui.Label('EMA Status: ' + emaStatus, {
-        fontSize: '11px', fontWeight: 'bold', color: emaColor, margin: '4px 0 0 0'
+      // Overall Mimosa compliance status
+      var mimosaStatus = ciVal < 0.3 ? '✓ COMPLIANT' : ciVal < 0.6 ? '⚠ CAUTION' : '✕ NON-COMPLIANT';
+      var mimosaColor = ciVal < 0.3 ? '#10b981' : ciVal < 0.6 ? '#f59e0b' : '#ef4444';
+      floater.add(ui.Label('Mimosa Status: ' + mimosaStatus, {
+        fontSize: '11px', fontWeight: 'bold', color: mimosaColor, margin: '4px 0 0 0'
       }));
 
       mapView.add(floater);
@@ -987,13 +980,13 @@ nav.add(toolsSection.panel);
 
 
 // ============================================================================
-// SECTION 9: EMA COMPLIANCE LEGEND
+// SECTION 9: MIMOSA COMPLIANCE LEGEND
 // ============================================================================
 
 var leg = ui.Panel({
-  style: { padding: '8px 20px', borderTop: '1px solid #e2e8f0' }
+  style: { padding: '8px 20px', border: '1px solid #e2e8f0' }
 });
-leg.add(ui.Label('EMA S.I. 274 Compliance', {
+leg.add(ui.Label('Mimosa Compliance Status', {
   fontSize: '10px', fontWeight: 'bold', color: '#475569', margin: '0 0 4px 0'
 }));
 
@@ -1005,9 +998,13 @@ function dot(col, txt) {
   r.add(ui.Label(txt, { fontSize: '9px', color: '#6b7280' }));
   return r;
 }
-leg.add(dot('#10b981', 'Compliant — Within safe limits'));
-leg.add(dot('#f59e0b', 'Caution — Moderate contamination'));
-leg.add(dot('#ef4444', 'Hazardous — Exceeds EMA limits'));
+leg.add(dot('#10b981', 'Compliant — TSS ≤1 mg/L, pH 6.5–7.5'));
+leg.add(dot('#f59e0b', 'Caution — Approaching limits'));
+leg.add(dot('#ef4444', 'Non-Compliant — Exceeds mine standards'));
+leg.add(ui.Label(
+  'pH 6.5-7.5 | TSS 0-1 | E.coli=0 | Coliform <1000 | Free Cl₂ 0.2-5 | EC <400',
+  { fontSize: '8px', color: '#6b7280', whiteSpace: 'pre', margin: '4px 0 0 0' }
+));
 nav.add(leg);
 
 // Footer
@@ -1072,9 +1069,9 @@ mapView.onClick(function(c) {
     // Compliance assessment
     var ndti = v.NDTI || 0;
     var ci = v.CI || 0;
-    var badge = ci < 0.3 ? { txt: '✓ COMPLIANT — Within EMA limits', col: '#059669' } :
-                ci < 0.6 ? { txt: '⚠ CAUTION — Moderate contamination', col: '#d97706' } :
-                           { txt: '✕ HAZARDOUS — Exceeds EMA S.I. 274', col: '#dc2626' };
+    var badge = ci < 0.3 ? { txt: '✓ COMPLIANT — Within Mimosa limits', col: '#059669' } :
+                ci < 0.6 ? { txt: '⚠ CAUTION — Approaching limits', col: '#d97706' } :
+                            { txt: '✕ NON-COMPLIANT — Exceeds mine standards', col: '#dc2626' };
     tbl.add(ui.Label(badge.txt, {
       fontWeight: 'bold', fontSize: '12px', color: badge.col, margin: '12px 0 0 0'
     }));
