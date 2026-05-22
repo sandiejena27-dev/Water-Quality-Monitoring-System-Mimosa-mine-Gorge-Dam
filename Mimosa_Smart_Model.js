@@ -366,6 +366,17 @@ drawTools.setShown(true);
 drawTools.setLinked(false);
 drawTools.setDrawModes(['polygon', 'rectangle']);
 
+// Automatically update activeROI and status bar when drawing is completed or edited
+drawTools.onDraw(function(geom) {
+  activeROI = geom;
+  statusLbl.setValue('● Drawing captured — Click "Compute & Display" to analyze.');
+  drawTools.setMode(null); // Automatically switch back to pan/navigation mode
+});
+drawTools.onEdit(function(geom) {
+  activeROI = geom;
+  statusLbl.setValue('● Drawing modified — Click "Compute & Display" to analyze.');
+});
+
 // ── Brand Header ────────────────────────────────────────────────────────────
 var brandBar = ui.Panel({
   style: { backgroundColor: '#1e1b4b', padding: '16px 20px', margin: '0' }
@@ -547,7 +558,7 @@ var runBtn = ui.Button({
     // Determine analysis region
     var layers = drawTools.layers();
     if (layers.length() > 0) {
-      activeROI = layers.get(0).toGeometry();
+      activeROI = layers.get(0).getEeObject();
     } else if (chkUseRivers.getValue()) {
       activeROI = riverFeatures.geometry();
     } else {
@@ -991,20 +1002,42 @@ nav.add(exportSection.panel);
 // SECTION 8: REGION & DRAWING TOOLS
 // ============================================================================
 
+var drawPolyBtn = ui.Button({
+  label: '✏ Draw Custom Polygon',
+  onClick: function() {
+    drawTools.setMode('polygon');
+    statusLbl.setValue('● Polygon drawing active: click on map to add vertices, double-click to finish.');
+  },
+  style: { stretch: 'horizontal', color: '#d97706' }
+});
+
+var drawRectBtn = ui.Button({
+  label: '⬜ Draw Custom Rectangle',
+  onClick: function() {
+    drawTools.setMode('rectangle');
+    statusLbl.setValue('● Rectangle drawing active: click and drag on map to draw.');
+  },
+  style: { stretch: 'horizontal', color: '#d97706' }
+});
+
+var resetDrawBtn = ui.Button({
+  label: 'Clear Drawings → Reset to Gorge Dam',
+  onClick: function() {
+    drawTools.layers().reset();
+    activeROI = DEFAULT_ROI;
+    mapView.centerObject(DEFAULT_ROI, 15);
+    statusLbl.setValue('● Reset to Gorge Dam ROI');
+  },
+  style: { stretch: 'horizontal' }
+});
+
 var toolsSection = makeSection('🔧', 'Region & Drawing Tools', '#d97706', [
-  ui.Label('Draw a polygon around any dam, then re-run analysis.\nUse rectangle or polygon modes from the map toolbar.', {
+  ui.Label('Draw a polygon around any dam, then re-run analysis.\nUse the shortcuts below or the map drawing toolbar.', {
     fontSize: '10px', color: '#6b7280', whiteSpace: 'pre-wrap'
   }),
-  ui.Button({
-    label: 'Clear Drawings → Reset to Gorge Dam',
-    onClick: function() {
-      drawTools.layers().reset();
-      activeROI = DEFAULT_ROI;
-      mapView.centerObject(DEFAULT_ROI, 15);
-      statusLbl.setValue('● Reset to Gorge Dam ROI');
-    },
-    style: { stretch: 'horizontal' }
-  })
+  drawPolyBtn,
+  drawRectBtn,
+  resetDrawBtn
 ], false);
 nav.add(toolsSection.panel);
 
@@ -1049,6 +1082,10 @@ nav.add(ui.Label('Sentinel-2 L2A  •  CHIRPS v2.0  •  smileRF-500  •  Drive
 
 mapView.onClick(function(c) {
   if (!processedComposite) return;
+  // If drawing tools are active (user is placing vertices for a polygon/rectangle),
+  // skip the click-to-inspect handler to avoid stealing focus.
+  if (drawTools.getMode() !== null) return;
+  
   var pt = ee.Geometry.Point([c.lon, c.lat]);
 
   var allBands = ['NDWI','NDTI','NDCI','TSI','AWEIn','SABI','FAI','CI','EVI','MSAVI'];
