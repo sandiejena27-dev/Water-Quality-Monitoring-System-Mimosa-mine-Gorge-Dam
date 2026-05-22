@@ -153,7 +153,7 @@ function launchEngine() {
   var DRIVE_FOLDER = 'Mimosa_WQ_Exports';
 
   // Upload your shapefile asset to GEE and update this path
-  var RIVERS_ASSET = 'users/your_username/Gorge_dam_rivers';
+  var RIVERS_ASSET = 'projects/ee-sandiejena27/assets/Gorge_dam_rivers';
   var riverFeatures = ee.FeatureCollection(RIVERS_ASSET);
 
   // Active analysis geometry (changes when user draws a polygon)
