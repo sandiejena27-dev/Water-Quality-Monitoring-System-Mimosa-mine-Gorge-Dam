@@ -983,53 +983,138 @@ function boot() {
 
 
   // ============================================================================
-  // SECTION 7: EXPORT TO GOOGLE DRIVE
+  // SECTION 7: EXPORT & DIRECT BROWSER DOWNLOADS
   // ============================================================================
 
-  var exportStatus = ui.Label('', { fontSize: '10px', color: '#059669', margin: '4px 0 0 0' });
+  var exportStatus = ui.Label('', { fontSize: '10px', color: '#059669', margin: '4px 0 0 0', fontWeight: 'bold' });
+  
+  var downloadLinksPanel = ui.Panel({
+    style: { 
+      padding: '8px', 
+      backgroundColor: 'rgba(255,255,255,0.05)', 
+      borderRadius: '6px', 
+      margin: '6px 0',
+      border: '1px dashed #34d399'
+    }
+  });
+  downloadLinksPanel.add(ui.Label('Direct download links will appear here...', { fontSize: '9px', color: '#94a3b8' }));
 
   var expRasterBtn = ui.Button({
-    label: 'Index Rasters (GeoTIFF)',
+    label: '🗺️ Direct GeoTIFF (All Bands for ArcGIS)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
+      
+      exportStatus.setValue('⏳ Generating direct GeoTIFF zip download...');
+      exportStatus.style().set('color', '#d97706');
+      
+      var description = 'Mimosa_Indices_' + selectedStart.replace(/-/g, '');
+      var selectedBands = ['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
+      var imageToExport = processedComposite.select(selectedBands);
+
+      // Standard GEE task (for IDE fallback)
       Export.image.toDrive({
-        image: processedComposite.select(['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI']),
-        description: 'Mimosa_Indices_' + selectedStart.replace(/-/g, ''),
+        image: imageToExport,
+        description: description,
         folder: DRIVE_FOLDER, region: activeROI, scale: 10, maxPixels: 1e10, fileFormat: 'GeoTIFF'
       });
-      exportStatus.setValue('✓ GeoTIFF queued → open Tasks tab');
+
+      // Direct Web App download link (separate bands filePerBand: true)
+      imageToExport.getDownloadURL({
+        name: description,
+        scale: 10,
+        crs: 'EPSG:4326', // WGS 84 Projection for clean ArcGIS importing
+        region: activeROI,
+        format: 'GEO_TIFF',
+        filePerBand: true // Pack separate band files (NDWI.tif, NDTI.tif, etc.) inside ZIP
+      }, function (url, err) {
+        if (err) {
+          exportStatus.setValue('✕ Error generating download: ' + err);
+          exportStatus.style().set('color', '#ef4444');
+          return;
+        }
+        if (url) {
+          downloadLinksPanel.clear();
+          var link = ui.Label('📥 Click here to download GeoTIFF Zip', {
+            fontSize: '11px', fontWeight: 'bold', color: '#10b981', margin: '4px 0'
+          }).setUrl(url);
+          downloadLinksPanel.add(link);
+          exportStatus.setValue('✓ Direct GeoTIFF link ready! Click below.');
+          exportStatus.style().set('color', '#059669');
+        } else {
+          exportStatus.setValue('✕ Direct download generation failed.');
+          exportStatus.style().set('color', '#ef4444');
+        }
+      });
     },
     style: { stretch: 'horizontal' }
   });
 
   var expCSVBtn = ui.Button({
-    label: 'Training Data (CSV)',
+    label: '📋 Direct Training Data (CSV)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
+      
+      exportStatus.setValue('⏳ Generating direct CSV download...');
+      exportStatus.style().set('color', '#d97706');
+      
+      var description = 'Mimosa_TrainingData_' + selectedStart.replace(/-/g, '');
       var bands = ['B2', 'B3', 'B4', 'B5', 'B8', 'B11', 'B12', 'NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
+      var trainingFC = processedComposite.select(bands).sampleRegions({
+        collection: samplePoints, properties: ['id', 'label', 'zone'], scale: 10, geometries: true
+      });
+
+      // Standard GEE task (for IDE fallback)
       Export.table.toDrive({
-        collection: processedComposite.select(bands).sampleRegions({
-          collection: samplePoints, properties: ['id', 'label', 'zone'], scale: 10, geometries: true
-        }),
-        description: 'Mimosa_TrainingData_' + selectedStart.replace(/-/g, ''),
+        collection: trainingFC,
+        description: description,
         folder: DRIVE_FOLDER, fileFormat: 'CSV'
       });
-      exportStatus.setValue('✓ Training CSV queued → open Tasks tab');
+
+      // Direct Web App download link
+      var selectors = ['id', 'label', 'zone', 'B2', 'B3', 'B4', 'B5', 'B8', 'B11', 'B12', 'NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
+      trainingFC.getDownloadURL('csv', selectors, description, function (url, err) {
+        if (err) {
+          exportStatus.setValue('✕ Error generating CSV: ' + err);
+          exportStatus.style().set('color', '#ef4444');
+          return;
+        }
+        if (url) {
+          downloadLinksPanel.clear();
+          var link = ui.Label('📥 Click here to download Training CSV', {
+            fontSize: '11px', fontWeight: 'bold', color: '#10b981', margin: '4px 0'
+          }).setUrl(url);
+          downloadLinksPanel.add(link);
+          exportStatus.setValue('✓ Direct CSV link ready! Click below.');
+          exportStatus.style().set('color', '#059669');
+        } else {
+          exportStatus.setValue('✕ Direct CSV generation failed.');
+          exportStatus.style().set('color', '#ef4444');
+        }
+      });
     },
     style: { stretch: 'horizontal' }
   });
 
   var expStatsBtn = ui.Button({
-    label: 'Zonal Statistics (CSV)',
+    label: '📈 Direct Zonal Statistics (CSV)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
+      
+      exportStatus.setValue('⏳ Calculating and generating Zonal Stats link...');
+      exportStatus.style().set('color', '#d97706');
+      
+      var description = 'Mimosa_ZonalStats_' + selectedStart.replace(/-/g, '');
       var names = ['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'CI'];
       processedComposite.select(names).reduceRegion({
         reducer: ee.Reducer.mean().combine(ee.Reducer.stdDev(), null, true)
           .combine(ee.Reducer.minMax(), null, true),
         geometry: activeROI, scale: 10, maxPixels: 1e9
       }).evaluate(function (r) {
-        if (!r) return;
+        if (!r) {
+          exportStatus.setValue('✕ Zonal stats calculation failed.');
+          exportStatus.style().set('color', '#ef4444');
+          return;
+        }
         var feats = [];
         for (var i = 0; i < names.length; i++) {
           feats.push(ee.Feature(null, {
@@ -1038,22 +1123,46 @@ function boot() {
             Min: r[names[i] + '_min'] || 0, Max: r[names[i] + '_max'] || 0
           }));
         }
+
+        var statsFC = ee.FeatureCollection(feats);
+
+        // Standard GEE task (for IDE fallback)
         Export.table.toDrive({
-          collection: ee.FeatureCollection(feats),
-          description: 'Mimosa_ZonalStats_' + selectedStart.replace(/-/g, ''),
+          collection: statsFC,
+          description: description,
           folder: DRIVE_FOLDER, fileFormat: 'CSV'
         });
-        exportStatus.setValue('✓ Stats queued → open Tasks tab');
+
+        // Direct Web App download link
+        statsFC.getDownloadURL('csv', ['Index', 'Mean', 'StdDev', 'Min', 'Max'], description, function (url, err) {
+          if (err) {
+            exportStatus.setValue('✕ Error generating Zonal Stats CSV: ' + err);
+            exportStatus.style().set('color', '#ef4444');
+            return;
+          }
+          if (url) {
+            downloadLinksPanel.clear();
+            var link = ui.Label('📥 Click here to download Zonal Stats CSV', {
+              fontSize: '11px', fontWeight: 'bold', color: '#10b981', margin: '4px 0'
+            }).setUrl(url);
+            downloadLinksPanel.add(link);
+            exportStatus.setValue('✓ Zonal Stats link ready! Click below.');
+            exportStatus.style().set('color', '#059669');
+          } else {
+            exportStatus.setValue('✕ Zonal Stats generation failed.');
+            exportStatus.style().set('color', '#ef4444');
+          }
+        });
       });
     },
     style: { stretch: 'horizontal' }
   });
 
-  var exportSection = makeSection('📤', 'Export to Drive', '#059669', [
-    ui.Label('Push to "' + DRIVE_FOLDER + '" → consumed by ML Dashboard.', {
+  var exportSection = makeSection('📤', 'Direct Browser Download', '#059669', [
+    ui.Label('Generate direct browser download links for ArcGIS, QGIS and spreadsheets.', {
       fontSize: '10px', color: '#6b7280'
     }),
-    expRasterBtn, expCSVBtn, expStatsBtn, exportStatus
+    expRasterBtn, expCSVBtn, expStatsBtn, downloadLinksPanel, exportStatus
   ], false);
   nav.add(exportSection.panel);
 
