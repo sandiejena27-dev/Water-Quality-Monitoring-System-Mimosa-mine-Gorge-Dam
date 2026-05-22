@@ -370,7 +370,7 @@ drawTools.setDrawModes(['polygon', 'rectangle']);
 drawTools.onDraw(function(geom) {
   activeROI = geom;
   statusLbl.setValue('● Drawing captured — Click "Compute & Display" to analyze.');
-  drawTools.setMode(null); // Automatically switch back to pan/navigation mode
+  drawTools.setShape(null); // Automatically switch back to pan/navigation mode
 });
 drawTools.onEdit(function(geom) {
   activeROI = geom;
@@ -1063,7 +1063,7 @@ nav.add(exportSection.panel);
 var drawPolyBtn = ui.Button({
   label: '✏ Draw Custom Polygon',
   onClick: function() {
-    drawTools.setMode('polygon');
+    drawTools.setShape('polygon');
     statusLbl.setValue('● Polygon drawing active: click on map to add vertices, double-click to finish.');
   },
   style: { stretch: 'horizontal', color: '#d97706' }
@@ -1072,7 +1072,7 @@ var drawPolyBtn = ui.Button({
 var drawRectBtn = ui.Button({
   label: '⬜ Draw Custom Rectangle',
   onClick: function() {
-    drawTools.setMode('rectangle');
+    drawTools.setShape('rectangle');
     statusLbl.setValue('● Rectangle drawing active: click and drag on map to draw.');
   },
   style: { stretch: 'horizontal', color: '#d97706' }
@@ -1142,7 +1142,7 @@ mapView.onClick(function(c) {
   if (!processedComposite) return;
   // If drawing tools are active (user is placing vertices for a polygon/rectangle),
   // skip the click-to-inspect handler to avoid stealing focus.
-  if (drawTools.getMode() !== null) return;
+  if (drawTools.getShape() !== null) return;
   
   var pt = ee.Geometry.Point([c.lon, c.lat]);
 
