@@ -204,6 +204,10 @@ function boot() {
 var DAM_CENTER = ee.Geometry.Point([29.84462, -20.31911]);
 var DEFAULT_ROI = DAM_CENTER.buffer(5800); // Added 800 meters to the original 5000m radius (now 5800m)
 
+// River/tributary network table asset (Upload 'Gorge_dam_rivers.zip' from 'Rivers - Tributes' folder as a GEE Table Asset)
+var RIVERS_ASSET = 'projects/ee-sandiejena27/assets/Gorge_dam_rivers'; 
+var riverFeatures = ee.FeatureCollection(RIVERS_ASSET);
+
 // Shared Drive folder for export pipeline
 // URL: https://drive.google.com/drive/folders/1bapvthKzInFVloehVqh2QdKO74QPyRl4
 var DRIVE_FOLDER = 'Mimosa_WQ_Exports';
@@ -510,6 +514,25 @@ var vegLabel = ui.Label('Riparian / Vegetation', {
 var chkEVI   = ui.Checkbox('EVI    Enhanced Vegetation', false);
 var chkMSAVI = ui.Checkbox('MSAVI  Modified Soil-Adj Veg', false);
 
+var riverLabel = ui.Label('Hydrology / Rivers', {
+  fontSize: '11px', fontWeight: 'bold', color: '#6366f1', margin: '8px 0 4px 0'
+});
+var chkRivers = ui.Checkbox({
+  label: 'Show River & Tributary Network',
+  value: false,
+  onChange: function(checked) {
+    var layers = mapView.layers();
+    for (var i = 0; i < layers.length(); i++) {
+      var layer = layers.get(i);
+      if (layer.getName() === 'Rivers & Tributaries Network') {
+        layer.setShown(checked);
+        break;
+      }
+    }
+  }
+});
+var chkUseRivers = ui.Checkbox('Use rivers as analysis boundary', false);
+
 // ── Run Button & Status ─────────────────────────────────────────────────────
 var rsStatus = ui.Label('', { fontSize: '10px', color: '#6b7280', margin: '8px 0 0 0' });
 var imgCountLabel = ui.Label('', { fontSize: '10px', color: '#94a3b8', margin: '2px 0 0 0' });
@@ -523,7 +546,13 @@ var runBtn = ui.Button({
 
     // Determine analysis region
     var layers = drawTools.layers();
-    activeROI = layers.length() > 0 ? layers.get(0).toGeometry() : DEFAULT_ROI;
+    if (layers.length() > 0) {
+      activeROI = layers.get(0).toGeometry();
+    } else if (chkUseRivers.getValue()) {
+      activeROI = riverFeatures.geometry();
+    } else {
+      activeROI = DEFAULT_ROI;
+    }
 
     // Build Sentinel-2 collection
     var s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
@@ -677,6 +706,7 @@ var rsSection = makeSection('📡', 'Remote Sensing Analysis', '#4338ca', [
   dateSlider,
   idxLabel, chkNDWI, chkNDTI, chkNDCI, chkTSI, chkAWEIn, chkSABI, chkFAI, chkCI,
   vegLabel, chkEVI, chkMSAVI,
+  riverLabel, chkRivers, chkUseRivers,
   runBtn, rsStatus, imgCountLabel
 ], true);
 nav.add(rsSection.panel);
@@ -1108,6 +1138,14 @@ mapView.addLayer(
   ee.Image().paint(ee.FeatureCollection(DEFAULT_ROI), 0, 2),
   { palette: ['#818cf8'] },
   'Gorge Dam ROI', true
+);
+
+// Display river & tributary network layer (starts as hidden, toggled via checkbox)
+mapView.addLayer(
+  riverFeatures,
+  { color: '#00ffff' },
+  'Rivers & Tributaries Network',
+  false
 );
 
 // Console output
