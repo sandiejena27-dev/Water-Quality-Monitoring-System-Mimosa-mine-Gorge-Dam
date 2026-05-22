@@ -168,55 +168,11 @@ function launchEngine() {
   // After export, lab measurements (TSS, pH, E.coli, etc.) are merged in the CSV.
 
   var samplePoints = ee.FeatureCollection([
-    // ── Gorge Dam Zone (reservoir water body) ─────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.84738, -20.31960]), { id: 'SP01', label: 'Gorge Dam NE' }),
-    ee.Feature(ee.Geometry.Point([29.84747, -20.32096]), { id: 'SP02', label: 'Gorge Dam E' }),
-    ee.Feature(ee.Geometry.Point([29.84650, -20.32087]), { id: 'SP03', label: 'Gorge Dam Center' }),
-    ee.Feature(ee.Geometry.Point([29.84586, -20.32125]), { id: 'SP04', label: 'Gorge Dam SW' }),
-    ee.Feature(ee.Geometry.Point([29.84798, -20.32020]), { id: 'SP05', label: 'Gorge Dam Wall' }),
-
-    // ── Dam Inlet & West Shore ────────────────────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.84488, -20.32072]), { id: 'SP06', label: 'Dam Inlet West' }),
-    ee.Feature(ee.Geometry.Point([29.84582, -20.31937]), { id: 'SP07', label: 'Dam NW Shore' }),
-    ee.Feature(ee.Geometry.Point([29.84534, -20.32000]), { id: 'SP08', label: 'Dam W Center' }),
-    ee.Feature(ee.Geometry.Point([29.84459, -20.31964]), { id: 'SP09', label: 'Inlet Channel' }),
-
-    // ── Upper Reservoir / Feeder Channel ──────────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.84361, -20.32071]), { id: 'SP10', label: 'Upper Reservoir S' }),
-    ee.Feature(ee.Geometry.Point([29.84346, -20.31977]), { id: 'SP11', label: 'Upper Reservoir N' }),
-    ee.Feature(ee.Geometry.Point([29.84480, -20.31865]), { id: 'SP12', label: 'Feeder NE' }),
-    ee.Feature(ee.Geometry.Point([29.84389, -20.31850]), { id: 'SP13', label: 'Feeder NW' }),
-
-    // ── Tailings Dam / Mine Infrastructure ────────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.84170, -20.31781]), { id: 'SP14', label: 'Tailings E' }),
-    ee.Feature(ee.Geometry.Point([29.84543, -20.31718]), { id: 'SP15', label: 'Tailings NE' }),
-    ee.Feature(ee.Geometry.Point([29.84207, -20.31599]), { id: 'SP16', label: 'Tailings Outfall' }),
-
-    // ── Pipeline / Return Water Channel ───────────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.84032, -20.31497]), { id: 'SP17', label: 'Pipeline N' }),
-    ee.Feature(ee.Geometry.Point([29.84060, -20.31587]), { id: 'SP18', label: 'Pipeline Mid' }),
-    ee.Feature(ee.Geometry.Point([29.83903, -20.31427]), { id: 'SP19', label: 'Pipeline Intake' }),
-    ee.Feature(ee.Geometry.Point([29.84035, -20.31402]), { id: 'SP20', label: 'Pipeline Junction' }),
-
-    // ── Upstream River / Natural Channel ──────────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.83458, -20.31867]), { id: 'SP21', label: 'Upstream Channel' }),
-    ee.Feature(ee.Geometry.Point([29.82836, -20.31625]), { id: 'SP22', label: 'Upstream River W' }),
-    ee.Feature(ee.Geometry.Point([29.82943, -20.31409]), { id: 'SP23', label: 'Upstream River NW' }),
-    ee.Feature(ee.Geometry.Point([29.83419, -20.31641]), { id: 'SP24', label: 'Upstream Confluence' }),
-
-    // ── Downstream / Outflow Zone ─────────────────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.83330, -20.32195]), { id: 'SP25', label: 'Downstream S' }),
-    ee.Feature(ee.Geometry.Point([29.82989, -20.32009]), { id: 'SP26', label: 'Downstream SW' }),
-
-    // ── Satellite Sites / Extended Monitoring ─────────────────────────────────
-    ee.Feature(ee.Geometry.Point([29.83530, -20.30323]), { id: 'SP27', label: 'Satellite N1' }),
-    ee.Feature(ee.Geometry.Point([29.83146, -20.30201]), { id: 'SP28', label: 'Satellite N2' }),
-    ee.Feature(ee.Geometry.Point([29.83604, -20.30647]), { id: 'SP29', label: 'Satellite NE' }),
-    ee.Feature(ee.Geometry.Point([29.83765, -20.30255]), { id: 'SP30', label: 'Satellite Far N' }),
-    ee.Feature(ee.Geometry.Point([29.83395, -20.31036]), { id: 'SP31', label: 'Mid Catchment' }),
-    ee.Feature(ee.Geometry.Point([29.83377, -20.30685]), { id: 'SP32', label: 'Upper Catchment' }),
-    ee.Feature(ee.Geometry.Point([29.83129, -20.30945]), { id: 'SP33', label: 'Catchment West' }),
-    ee.Feature(ee.Geometry.Point([29.83148, -20.30488]), { id: 'SP34', label: 'Catchment NW' }),
+    ee.Feature(ee.Geometry.Point([29.84381885600004, -20.31754411099996]), { id: 'SP01', label: 'Testing Point 1', zone: 'core' }),
+    ee.Feature(ee.Geometry.Point([29.842569424000033, -20.31860980299996]), { id: 'SP02', label: 'Testing Point 2', zone: 'core' }),
+    ee.Feature(ee.Geometry.Point([29.84402097000003, -20.320410454999944]), { id: 'SP03', label: 'Testing Point 3', zone: 'core' }),
+    ee.Feature(ee.Geometry.Point([29.84560113300006, -20.31899565699996]), { id: 'SP04', label: 'Testing Point 4', zone: 'core' }),
+    ee.Feature(ee.Geometry.Point([29.847088369000062, -20.320006020999926]), { id: 'SP05', label: 'Testing Point 5', zone: 'core' }),
   ]);
 
 
