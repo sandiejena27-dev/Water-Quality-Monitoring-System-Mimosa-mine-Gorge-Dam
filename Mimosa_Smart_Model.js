@@ -987,12 +987,12 @@ function boot() {
   // ============================================================================
 
   var exportStatus = ui.Label('', { fontSize: '10px', color: '#059669', margin: '4px 0 0 0', fontWeight: 'bold' });
-  
+
   var downloadLinksPanel = ui.Panel({
-    style: { 
-      padding: '8px', 
-      backgroundColor: 'rgba(255,255,255,0.05)', 
-      borderRadius: '6px', 
+    style: {
+      padding: '8px',
+      backgroundColor: 'rgba(255,255,255,0.05)',
+      borderRadius: '6px',
       margin: '6px 0',
       border: '1px dashed #34d399'
     }
@@ -1003,10 +1003,10 @@ function boot() {
     label: '🗺️ Direct GeoTIFF (All Bands for ArcGIS)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
-      
+
       exportStatus.setValue('⏳ Generating direct GeoTIFF zip download...');
       exportStatus.style().set('color', '#d97706');
-      
+
       var description = 'Mimosa_Indices_' + selectedStart.replace(/-/g, '');
       var selectedBands = ['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
       var imageToExport = processedComposite.select(selectedBands);
@@ -1053,10 +1053,10 @@ function boot() {
     label: '📋 Direct Training Data (CSV)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
-      
+
       exportStatus.setValue('⏳ Generating direct CSV download...');
       exportStatus.style().set('color', '#d97706');
-      
+
       var description = 'Mimosa_TrainingData_' + selectedStart.replace(/-/g, '');
       var bands = ['B2', 'B3', 'B4', 'B5', 'B8', 'B11', 'B12', 'NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
       var trainingFC = processedComposite.select(bands).sampleRegions({
@@ -1099,10 +1099,10 @@ function boot() {
     label: '📈 Direct Zonal Statistics (CSV)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
-      
+
       exportStatus.setValue('⏳ Calculating and generating Zonal Stats link...');
       exportStatus.style().set('color', '#d97706');
-      
+
       var description = 'Mimosa_ZonalStats_' + selectedStart.replace(/-/g, '');
       var names = ['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'CI'];
       processedComposite.select(names).reduceRegion({
