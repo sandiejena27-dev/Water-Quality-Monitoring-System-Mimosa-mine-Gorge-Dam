@@ -84,144 +84,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom styling to make the dashboard look extremely premium and gorgeous
-st.markdown("""
-<style>
-    /* Import modern Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    /* Root overrides */
-    html, body, [data-testid="stAppViewContainer"] {
-        font-family: 'Outfit', 'Inter', sans-serif !important;
-        background-color: #080c15 !important;
-        color: #e2e8f0 !important;
-    }
-    
-    /* Header styling */
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Outfit', sans-serif !important;
-        font-weight: 600 !important;
-        color: #ffffff !important;
-        letter-spacing: -0.02em !important;
-    }
-    
-    /* Top banner card */
-    .banner-card {
-        background: linear-gradient(135deg, rgba(30, 27, 75, 0.4) 0%, rgba(99, 102, 241, 0.15) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.25);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    }
-    
-    /* Card widgets */
-    div[data-testid="stMetricValue"] {
-        font-family: 'Outfit', sans-serif !important;
-        font-size: 2.2rem !important;
-        font-weight: 700 !important;
-        background: linear-gradient(to right, #ffffff, #818cf8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    /* Styled metric containers */
-    div[data-testid="stMetric"] {
-        background: rgba(17, 24, 39, 0.45) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        padding: 16px 20px !important;
-        border-radius: 12px !important;
-        backdrop-filter: blur(8px) !important;
-        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.15) !important;
-        transition: transform 0.3s ease, border-color 0.3s ease !important;
-    }
-    div[data-testid="stMetric"]:hover {
-        transform: translateY(-4px) !important;
-        border-color: rgba(99, 102, 241, 0.4) !important;
-    }
-    
-    /* Custom Sidebar design */
-    [data-testid="stSidebar"] {
-        background-color: #0c0f1d !important;
-        border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
-    }
-    
-    /* Sidebar dividers */
-    hr {
-        border-color: rgba(255, 255, 255, 0.08) !important;
-    }
-    
-    /* Sleek buttons styling */
-    .stButton>button {
-        background: linear-gradient(90deg, #6366f1 0%, #4f46e5 100%) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px !important;
-        padding: 10px 24px !important;
-        font-weight: 600 !important;
-        font-family: 'Outfit', sans-serif !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
-    }
-    .stButton>button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
-        background: linear-gradient(90deg, #818cf8 0%, #6366f1 100%) !important;
-    }
-    .stButton>button:active {
-        transform: translateY(0px) !important;
-    }
-    
-    /* Secondary/standard buttons override */
-    div.stDownloadButton>button {
-        background: transparent !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        color: #e2e8f0 !important;
-        box-shadow: none !important;
-    }
-    div.stDownloadButton>button:hover {
-        border-color: #6366f1 !important;
-        color: #ffffff !important;
-        background: rgba(99, 102, 241, 0.05) !important;
-    }
-    
-    /* Styled tab container */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px !important;
-        background-color: rgba(17, 24, 39, 0.5) !important;
-        padding: 6px 12px !important;
-        border-radius: 12px !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        height: 40px !important;
-        border-radius: 8px !important;
-        background-color: transparent !important;
-        border: none !important;
-        color: #94a3b8 !important;
-        font-family: 'Outfit', sans-serif !important;
-        font-weight: 500 !important;
-        transition: all 0.2s ease !important;
-    }
-    .stTabs [data-baseweb="tab"]:hover {
-        color: #ffffff !important;
-        background-color: rgba(255, 255, 255, 0.05) !important;
-    }
-    .stTabs [aria-selected="true"] {
-        background: rgba(99, 102, 241, 0.15) !important;
-        color: #818cf8 !important;
-        border-bottom: 2px solid #818cf8 !important;
-    }
-    
-    /* Input field design */
-    div[data-baseweb="select"], div[data-baseweb="input"], .stSlider {
-        background-color: rgba(17, 24, 39, 0.5) !important;
-        border-radius: 8px !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+
 
 # ============================================================================
 # PERSISTENCE LAYER
@@ -597,33 +460,27 @@ tab_home, tab_map, tab_data, tab_model, tab_perf, tab_ema, tab_logs = st.tabs([
 # ── TAB 1: HOME ─────────────────────────────────────────────────────────────
 
 with tab_home:
-        # Premium operational dashboard top banner
+    st.title("◆ Mimosa Mine — Water Quality Intelligence")
     st.markdown("""
-    <div class="banner-card">
-        <div style="font-size: 2.2rem; font-weight: 700; color: #ffffff; margin-bottom: 8px;">
-            ◆ Mimosa Mine — Water Quality Intelligence
-        </div>
-        <div style="font-size: 1.05rem; color: #94a3b8; font-weight: 300; line-height: 1.6;">
-            Component 2 of the Integrated WQ Remote Sensing & Machine Learning Monitoring Framework.
-            This platform auto-synchronizes spectral index exports from the GEE cloud engine and compiles
-            Random Forest regressions to predict key chemical & biological indices.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    **Component 2** of the Integrated Water Quality Monitoring Framework.  
+    This dashboard receives spectral index exports from the **GEE Remote Sensing Engine** 
+    and runs a **Random Forest Regression** model to predict in-situ water quality 
+    parameters from satellite-derived features.
+    """)
     
     # ── Prominent GEE Launch ─────────────────────────────────────────────
-    launch_col1, launch_col2 = st.columns([2.5, 1])
+    st.subheader("🛰️ Step 1 — Run Remote Sensing Analysis")
+    launch_col1, launch_col2 = st.columns([2, 1])
     with launch_col1:
         st.markdown("""
-        <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding: 20px; border-radius: 12px; border-left: 5px solid #6366f1;">
-            <h4 style="margin-top: 0; color: #ffffff;">🛰️ Step 1 — GEE Remote Sensing Engine Operations</h4>
-            <p style="color: #cbd5e1; font-size: 0.9rem; margin-bottom: 0;">
-                Launch the Google Earth Engine console to execute high-fidelity spectral computations (NDWI, NDTI, NDCI, TSI, AWEIn) over the Gorge Dam reservoir boundary. Export computed zonal stats to Google Drive when complete.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+        Open the **GEE Remote Sensing Engine** to:
+        - Compute spectral indices (NDWI, NDTI, NDCI, TSI, AWEIn)
+        - Visualize water quality layers on the map  
+        - **Export Training CSV and Zonal Stats to Google Drive**
+        
+        Once exported, return here and click **"Sync from Google Drive"** in the sidebar.
+        """)
     with launch_col2:
-        st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
         st.link_button(
             "🛰️ LAUNCH GEE APP",
             GEE_APP_URL,
@@ -640,29 +497,30 @@ with tab_home:
     
     # ── Architecture Diagram ─────────────────────────────────────────────
     st.subheader("System Architecture")
-    st.markdown("""
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 5px;">
-        <!-- Card 1 -->
-        <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid #6366f1; padding: 20px; border-radius: 12px;">
-            <h4 style="margin-top:0; color:#818cf8; margin-bottom:8px;">📡 Component 1 — GEE Engine</h4>
-            <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:12px; line-height:1.5;">Sentinel-2 L2A surface reflectance computation & 10-band spectral index modeling.</p>
-            <a href="https://ee-sandiejena27.projects.earthengine.app/view/water-quality-minotoring-system-mimosa-gorge-dam" target="_blank" style="font-size:0.85rem; color:#818cf8; text-decoration:none; font-weight:bold;">Launch GEE App →</a>
-        </div>
-        <!-- Card 2 -->
-        <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid #10b981; padding: 20px; border-radius: 12px;">
-            <h4 style="margin-top:0; color:#34d399; margin-bottom:8px;">🔗 Data Bridge — Drive</h4>
-            <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:12px; line-height:1.5;">Auto-synchronized remote sensing CSVs and Zonal Stats compiled from cloud operations.</p>
-            <a href="https://drive.google.com/drive/folders/1bapvthKzInFVloehVqh2QdKO74QPyRl4" target="_blank" style="font-size:0.85rem; color:#34d399; text-decoration:none; font-weight:bold;">Open Drive Folder →</a>
-        </div>
-        <!-- Card 3 -->
-        <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-left: 4px solid #f59e0b; padding: 20px; border-radius: 12px;">
-            <h4 style="margin-top:0; color:#fbbf24; margin-bottom:8px;">🤖 Component 2 — ML Model</h4>
-            <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:12px; line-height:1.5;">Random Forest Regression pipelines optimizing multi-variable potable compliance standards.</p>
-            <span style="font-size:0.85rem; color:#fbbf24; font-weight:bold;">Model Status: Persistent</span>
-        </div>
-    </div>
-    <br>
-    """, unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info(
+            "**📡 Component 1 — GEE App**\n\n"
+            "[Live App →](" + GEE_APP_URL + ")\n\n"
+            "→ Sentinel-2 L2A processing\n"
+            "→ 5 spectral index computation\n"
+            "→ Export CSV/TIFF to Drive"
+        )
+    with col2:
+        st.success(
+            "**🔗 Data Bridge — Google Drive**\n\n"
+            "[Open Folder →](" + DRIVE_FOLDER_URL + ")\n\n"
+            "→ Mimosa_Training_Data_*.csv\n"
+            "→ Mimosa_Zonal_Stats_*.csv\n"
+            "→ Mimosa_WQ_Indices_*.tif"
+        )
+    with col3:
+        st.warning(
+            "**🤖 Component 2 — This Dashboard**\n\n"
+            "→ RF Regression (500 trees)\n"
+            "→ R², RMSE, CV validation\n"
+            "→ EMA S.I. 274 compliance"
+        )
     
     st.divider()
     
@@ -724,68 +582,61 @@ with tab_home:
 # ── TAB 1B: SPATIAL MAP ──────────────────────────────────────────────────────
 
 with tab_map:
-    st.header("🗺️ Spatial Intelligence — Gorge Dam Study Area")
+    st.header("🗺️ Spatial Map Explorer")
     st.markdown("""
-    Explore water quality parameters across the **Gorge Dam point network** at Zvishavane. 
-    Toggle basemaps, switch parameters, and compare in-situ field data against the ML model predictions!
+    Select a basemap style and toggle between different chemical and biological water quality layers. 
+    Compare actual laboratory measurements against the model predictions at each sample location.
     """)
     
     data = load_data()
     if data is None:
-        st.warning("No data loaded. Sync from Google Drive or upload a CSV in the sidebar to view the map.")
+        st.warning("No data loaded. Sync from Google Drive or upload a CSV in the sidebar.")
     else:
-        # Define layout columns: Controls (1) | Map (2.5)
-        map_ctrl_col, map_display_col = st.columns([1, 2.5])
-        
-        with map_ctrl_col:
-            st.markdown("### Map Layers & Settings")
-            
-            # 1. Basemap Style Selection
+        # 1. Map Settings Sidebar-style Controls
+        col_ctrl1, col_ctrl2, col_ctrl3 = st.columns(3)
+        with col_ctrl1:
             basemap_choice = st.selectbox(
-                "Basemap Style",
-                ["Satellite Detailed", "Sleek Dark Mode", "Clean Light Mode", "Standard Streets"],
-                index=0
+                "Select Basemap Style",
+                ["Satellite Imagery", "Sleek Dark Mode", "Clean Light Mode", "Standard Streets"],
+                index=0,
+                key="map_basemap"
             )
             basemap_styles = {
-                "Satellite Detailed": "white-bg",
+                "Satellite Imagery": "white-bg",
                 "Sleek Dark Mode": "carto-darkmatter",
                 "Clean Light Mode": "carto-positron",
                 "Standard Streets": "open-street-map"
             }
-            
-            # 2. Variable Selector (Layer overswitch)
+        with col_ctrl2:
             map_var_label = st.selectbox(
-                "Water Quality Layer",
+                "Select Water Quality Parameter (Layer)",
                 list(TARGET_OPTIONS.keys()),
-                index=0
+                index=0,
+                key="map_param"
             )
             map_var_col = TARGET_OPTIONS[map_var_label]
             limits = MIMOSA_LIMITS.get(map_var_col, {})
-            
-            # 3. Data Source Mode
+        with col_ctrl3:
             data_mode = st.radio(
-                "Data Source Mode",
-                ["In-situ (Actual Lab)", "ML Model Predictions"],
-                help="Switch between actual laboratory readings and predictions made by the Random Forest model."
+                "Display Data Mode",
+                ["Actual Lab Measurements", "Model Predictions"],
+                horizontal=True,
+                key="map_mode"
             )
             
-            st.divider()
-            st.markdown("### Compliance Summary")
-            
-        # Get active coordinates and values
-        df_map = data.copy()
+        st.divider()
         
-        # Ensure we filter out duplicate rows per sample point to only show the latest composite
+        # Prepare data for map
+        df_map = data.copy()
         latest_file = df_map['_source_file'].iloc[-1] if '_source_file' in df_map.columns else None
         if latest_file:
             df_map = df_map[df_map['_source_file'] == latest_file]
             
-        # If the user selected predictions:
-        is_prediction_mode = (data_mode == "ML Model Predictions")
+        # ML model prediction logic
+        is_prediction_mode = (data_mode == "Model Predictions")
         prediction_error = None
         
         if is_prediction_mode:
-            # Check if model exists and matches
             existing_model, existing_scaler = load_model()
             if existing_model is not None:
                 log = load_training_log()
@@ -794,22 +645,20 @@ with tab_map:
                     trained_target = latest['target']
                     
                     if trained_target == map_var_col:
-                        # Predict on map data
                         available_features = [c for c in FEATURE_COLS if c in df_map.columns]
                         clean_predict = df_map[available_features].dropna()
                         if not clean_predict.empty:
                             scaled_predict = existing_scaler.transform(clean_predict)
                             preds = existing_model.predict(scaled_predict)
-                            # Assign predictions to map variable
                             df_map.loc[clean_predict.index, map_var_col] = preds
                         else:
                             prediction_error = "No features available for prediction."
                     else:
-                        prediction_error = f"Model is trained for **{MIMOSA_LIMITS.get(trained_target, {}).get('label', trained_target)}**, but you requested **{map_var_label}**. Go to **🤖 ML Model** tab and train the model for {map_var_label} first."
+                        prediction_error = f"Model is currently trained for {MIMOSA_LIMITS.get(trained_target, {}).get('label', trained_target)}. Go to ML Model tab and train it for {map_var_label}."
             else:
-                prediction_error = "No ML model trained yet. Go to **🤖 ML Model** tab and train the model first."
-        
-        # Calculate compliance status for each point
+                prediction_error = "No ML model trained yet. Train the model first."
+                
+        # Compliance calculations
         statuses = []
         colors = []
         value_displays = []
@@ -831,114 +680,85 @@ with tab_map:
         df_map['MarkerColor'] = colors
         df_map['ValueDisplay'] = value_displays
         
-        # Map stats calculation
-        valid_vals = df_map[map_var_col].dropna()
-        if not valid_vals.empty:
-            mean_val = valid_vals.mean()
-            compliant_pct = (df_map['Status'] == 'Compliant').sum() / len(df_map) * 100
-        else:
-            mean_val, compliant_pct = 0, 0
-            
-        with map_ctrl_col:
-            st.metric("Mean Value", f"{mean_val:.2f} {limits.get('unit', '')}")
-            st.metric("Compliance Rate", f"{compliant_pct:.1f}%")
-            if prediction_error:
-                st.warning(prediction_error)
-                
-        with map_display_col:
-            # Center of map
-            center_lat = df_map['Latitude'].mean()
-            center_lon = df_map['Longitude'].mean()
-            
-            # Setup Plotly map
-            import plotly.graph_objects as go
-            
-            fig_map = go.Figure()
-            
-            # Color groups to ensure a clean legend
-            status_groups = df_map.groupby('Status')
-            
-            color_map = {
-                "Compliant": "#10b981",
-                "Caution": "#f59e0b",
-                "Non-Compliant": "#ef4444",
-                "Unknown": "#6b7280"
-            }
-            
-            for status_name, group in status_groups:
-                fig_map.add_trace(go.Scattermapbox(
-                    lat=group['Latitude'],
-                    lon=group['Longitude'],
-                    mode='markers+text',
-                    marker=go.scattermapbox.Marker(
-                        size=14,
-                        color=color_map.get(status_name, "#6b7280"),
-                        opacity=0.9
-                    ),
-                    text=group['id'],
-                    textposition="top center",
-                    textfont=dict(size=10, color="#ffffff", family="Outfit"),
-                    name=status_name,
-                    hoverinfo='text',
-                    hovertext=[
-                        f"<b>{row['id']} - {row['label']}</b><br>"
-                        f"Value: {row['ValueDisplay']}<br>"
-                        f"Status: {row['Status']}"
-                        for _, row in group.iterrows()
-                    ]
-                ))
-                
-            # Basemap configuration
-            layout_kwargs = {
-                "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
-                "height": 520,
-                "paper_bgcolor": "rgba(0,0,0,0)",
-                "plot_bgcolor": "rgba(0,0,0,0)",
-                "showlegend": True,
-                "legend": dict(
-                    yanchor="top",
-                    y=0.98,
-                    xanchor="left",
-                    x=0.02,
-                    bgcolor="rgba(11, 15, 26, 0.85)",
-                    bordercolor="rgba(255, 255, 255, 0.1)",
-                    borderwidth=1,
-                    font=dict(color="#ffffff", family="Outfit")
+        # Build map
+        center_lat = df_map['Latitude'].mean()
+        center_lon = df_map['Longitude'].mean()
+        
+        import plotly.graph_objects as go
+        fig_map = go.Figure()
+        
+        status_groups = df_map.groupby('Status')
+        color_map = {
+            "Compliant": "#10b981", # Green
+            "Caution": "#f59e0b", # Orange
+            "Non-Compliant": "#ef4444", # Red
+            "Unknown": "#6b7280"
+        }
+        
+        for status_name, group in status_groups:
+            fig_map.add_trace(go.Scattermapbox(
+                lat=group['Latitude'],
+                lon=group['Longitude'],
+                mode='markers+text',
+                marker=go.scattermapbox.Marker(
+                    size=14,
+                    color=color_map.get(status_name, "#6b7280"),
+                    opacity=0.9
                 ),
-                "mapbox": {
-                    "center": {"lat": center_lat, "lon": center_lon},
-                    "zoom": 14.0
-                }
-            }
-            
-            # ESRI World Imagery URL for sleek satellite basemap
-            if basemap_choice == "Satellite Detailed":
-                layout_kwargs["mapbox"]["style"] = "white-bg"
-                layout_kwargs["mapbox"]["layers"] = [
-                    {
-                        "below": 'traces',
-                        "sourcetype": "raster",
-                        "source": [
-                            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                        ],
-                        "tileSize": 256
-                    }
+                text=group['id'],
+                textposition="top center",
+                name=status_name,
+                hoverinfo='text',
+                hovertext=[
+                    f"<b>{row['id']} - {row['label']}</b><br>"
+                    f"Value: {row['ValueDisplay']}<br>"
+                    f"Status: {row['Status']}"
+                    for _, row in group.iterrows()
                 ]
-            else:
-                layout_kwargs["mapbox"]["style"] = basemap_styles.get(basemap_choice, "carto-darkmatter")
-                
-            fig_map.update_layout(**layout_kwargs)
-            st.plotly_chart(fig_map, use_container_width=True)
+            ))
             
+        layout_kwargs = {
+            "margin": {"r": 0, "t": 0, "l": 0, "b": 0},
+            "height": 500,
+            "showlegend": True,
+            "mapbox": {
+                "center": {"lat": center_lat, "lon": center_lon},
+                "zoom": 14.1
+            }
+        }
+        
+        if basemap_choice == "Satellite Imagery":
+            layout_kwargs["mapbox"]["style"] = "white-bg"
+            layout_kwargs["mapbox"]["layers"] = [
+                {
+                    "below": 'traces',
+                    "sourcetype": "raster",
+                    "source": [
+                        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    ],
+                    "tileSize": 256
+                }
+            ]
+        else:
+            layout_kwargs["mapbox"]["style"] = basemap_styles.get(basemap_choice, "open-street-map")
+            
+        fig_map.update_layout(**layout_kwargs)
+        
+        # Display map and warning if any
+        if prediction_error:
+            st.warning(prediction_error)
+            
+        st.plotly_chart(fig_map, use_container_width=True)
+        
         st.divider()
         
         # ── POINT DETAILS INSPECTOR ──────────────────────────────────────────
-        st.subheader("🔬 Sample Point Detail Inspector")
+        st.subheader("🔬 Sample Point Inspector")
         ins_col1, ins_col2 = st.columns([1, 2])
         
         with ins_col1:
             point_labels = sorted(data['label'].unique().tolist())
-            selected_point_label = st.selectbox("Select Point to Inspect", point_labels)
+            selected_point_label = st.selectbox("Choose Point to Inspect", point_labels)
             
             point_data = data[data['label'] == selected_point_label].copy()
             if '_source_file' in point_data.columns:
@@ -946,49 +766,20 @@ with tab_map:
                 
             latest_val = point_data[map_var_col].iloc[-1] if not point_data.empty else None
             
-            # Show gauge indicator
             if latest_val is not None and not pd.isna(latest_val):
                 p_status, p_color = get_compliance_status(map_var_col, latest_val)
-                
-                if 'safe_low' in limits and 'safe_high' in limits:
-                    low = limits['safe_low']
-                    high = limits['safe_high']
-                    spread = high - low
-                    gauge_min = max(0.0, low - spread)
-                    gauge_max = high + spread
-                else:
-                    safe = limits.get('safe', 25)
-                    caution = limits.get('caution', 50)
-                    gauge_min = 0.0
-                    gauge_max = caution * 1.5
-                    
-                fig_point_gauge = go.Figure(go.Indicator(
-                    mode="gauge+number",
-                    value=latest_val,
-                    title={'text': f"{map_var_label} Level", 'font': {'family': 'Outfit', 'color': '#ffffff', 'size': 16}},
-                    number={'suffix': f" {limits.get('unit', '')}", 'font': {'color': '#ffffff', 'family': 'Outfit', 'size': 24}},
-                    gauge={
-                        'axis': {'range': [gauge_min, gauge_max], 'tickfont': {'color': '#94a3b8'}},
-                        'bar': {'color': p_color},
-                        'steps': [
-                            {'range': [gauge_min, gauge_max], 'color': 'rgba(255, 255, 255, 0.05)'}
-                        ]
-                    }
-                ))
-                fig_point_gauge.update_layout(
-                    height=240,
-                    margin={"t": 50, "b": 10, "l": 20, "r": 20},
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    template="plotly_dark"
+                st.metric(
+                    label=f"Latest {map_var_label}",
+                    value=f"{latest_val:.2f} {limits.get('unit', '')}",
+                    delta=p_status,
+                    delta_color="normal" if p_status == "Compliant" else "inverse"
                 )
-                st.plotly_chart(fig_point_gauge, use_container_width=True)
+                st.info(f"Compliance Standard: {limits.get('label', map_var_col)} is in state **{p_status}**.")
             else:
-                st.info("No data available for the selected parameter at this point.")
+                st.info("No data available.")
                 
         with ins_col2:
-            st.markdown(f"### Historical Evolution for **{selected_point_label}**")
-            
+            st.markdown(f"**Historical Trend for {selected_point_label}**")
             if not point_data.empty:
                 dates = []
                 import re
@@ -1000,89 +791,32 @@ with tab_map:
                         dates.append(str(f).replace('Mimosa_Training_Data_', '').replace('.csv', ''))
                 point_data['Date'] = dates
                 
-                # Show historical line plot
                 fig_history = go.Figure()
                 fig_history.add_trace(go.Scatter(
                     x=point_data['Date'],
                     y=point_data[map_var_col],
                     mode='lines+markers',
-                    line=dict(color='#818cf8', width=3),
-                    marker=dict(size=8, color='#6366f1'),
+                    line=dict(color='#0066cc', width=2.5),
+                    marker=dict(size=7),
                     name=map_var_label
                 ))
                 
-                # Threshold reference lines
+                # Threshold indicators
                 if 'safe' in limits:
-                    fig_history.add_hline(
-                        y=limits['safe'],
-                        line_dash="dash",
-                        line_color="#10b981",
-                        annotation_text="Safe Limit",
-                        annotation_position="bottom right"
-                    )
+                    fig_history.add_hline(y=limits['safe'], line_dash="dash", line_color="#10b981", annotation_text="Safe")
                 if 'caution' in limits:
-                    fig_history.add_hline(
-                        y=limits['caution'],
-                        line_dash="dash",
-                        line_color="#f59e0b",
-                        annotation_text="Caution Limit",
-                        annotation_position="top right"
-                    )
+                    fig_history.add_hline(y=limits['caution'], line_dash="dash", line_color="#f59e0b", annotation_text="Caution")
                 elif 'safe_low' in limits and 'safe_high' in limits:
-                    fig_history.add_hline(
-                        y=limits['safe_low'],
-                        line_dash="dash",
-                        line_color="#ef4444",
-                        annotation_text="Lower Compliant Limit"
-                    )
-                    fig_history.add_hline(
-                        y=limits['safe_high'],
-                        line_dash="dash",
-                        line_color="#ef4444",
-                        annotation_text="Upper Compliant Limit"
-                    )
+                    fig_history.add_hline(y=limits['safe_low'], line_dash="dash", line_color="#ef4444")
+                    fig_history.add_hline(y=limits['safe_high'], line_dash="dash", line_color="#ef4444")
                     
                 fig_history.update_layout(
-                    height=240,
-                    margin={"t": 20, "b": 20, "l": 20, "r": 20},
-                    paper_bgcolor="rgba(0,0,0,0)",
-                    plot_bgcolor="rgba(0,0,0,0)",
-                    xaxis=dict(gridcolor="rgba(255,255,255,0.05)", tickfont=dict(color="#94a3b8")),
-                    yaxis=dict(gridcolor="rgba(255,255,255,0.05)", tickfont=dict(color="#94a3b8")),
-                    template="plotly_dark"
+                    height=200,
+                    margin={"t": 10, "b": 10, "l": 10, "r": 10},
+                    xaxis=dict(gridcolor="rgba(0,0,0,0.05)"),
+                    yaxis=dict(gridcolor="rgba(0,0,0,0.05)")
                 )
                 st.plotly_chart(fig_history, use_container_width=True)
-                
-                # Show full parameters in-situ card
-                latest_record = point_data.iloc[-1]
-                st.markdown("#### Latest Laboratory Readings")
-                col_i1, col_i2, col_i3, col_i4 = st.columns(4)
-                
-                def render_param_col(st_col, param_name, param_col):
-                    val = latest_record.get(param_col, None)
-                    p_lim = MIMOSA_LIMITS.get(param_col, {})
-                    if val is not None and not pd.isna(val):
-                        _, color = get_compliance_status(param_col, val)
-                        st_col.markdown(
-                            f"<div style='background: rgba(17, 24, 39, 0.45); border: 1px solid rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; text-align: center; border-left: 4px solid {color}'>"
-                            f"<div style='font-size: 0.8rem; color: #94a3b8;'>{param_name}</div>"
-                            f"<div style='font-size: 1.1rem; font-weight: bold; color: #ffffff;'>{val:.2f} <span style='font-size: 0.7rem;'>{p_lim.get('unit','')}</span></div>"
-                            f"</div>",
-                            unsafe_allow_html=True
-                        )
-                    else:
-                        st_col.markdown(
-                            f"<div style='background: rgba(17, 24, 39, 0.45); border: 1px solid rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; text-align: center; border-left: 4px solid #6b7280'>"
-                            f"<div style='font-size: 0.8rem; color: #94a3b8;'>{param_name}</div>"
-                            f"<div style='font-size: 1.1rem; font-weight: bold; color: #6b7280;'>N/A</div>"
-                            f"</div>",
-                            unsafe_allow_html=True
-                        )
-                
-                render_param_col(col_i1, "TSS", "TSS_mgL")
-                render_param_col(col_i2, "pH", "pH")
-                render_param_col(col_i3, "Turbidity", "Turbidity_NTU")
-                render_param_col(col_i4, "Chlorophyll-a", "Chlorophyll_ugL")
 
 
 # ── TAB 2: DATA EXPLORER ────────────────────────────────────────────────────
