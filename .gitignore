@@ -1,0 +1,33 @@
+# Environments
+.venv/
+backend/venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+# Streamlit config & temporary files
+.streamlit/config.toml
+.streamlit/secrets.toml
+dashboard/.streamlit/config.toml
+dashboard/.streamlit/secrets.toml
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

@@ -999,36 +999,110 @@ function boot() {
   });
   downloadLinksPanel.add(ui.Label('Direct download links will appear here...', { fontSize: '9px', color: '#94a3b8' }));
 
+  // ── Band and Scale Selection Dropdowns (Memory Limit Workaround) ───────────
+  var dlBandLabel = ui.Label('1. Choose Indices to Download:', {
+    fontSize: '11px', fontWeight: 'bold', color: '#059669', margin: '8px 0 2px 0'
+  });
+  
+  var dlBandSelect = ui.Select({
+    items: [
+      'All 10 Spectral Indices (ZIP)',
+      'NDWI Only (Water Extent)',
+      'NDTI Only (Turbidity / Sediment)',
+      'NDCI Only (Chlorophyll-a)',
+      'TSI Only (Trophic State Index)',
+      'AWEIn Only (Water Detection)',
+      'SABI Only (Algal Bloom)',
+      'FAI Only (Floating Algae)',
+      'CI Only (Contamination Index)',
+      'EVI Only (Enhanced Vegetation)',
+      'MSAVI Only (Modified Soil-Adj Veg)'
+    ],
+    value: 'All 10 Spectral Indices (ZIP)',
+    style: { stretch: 'horizontal', margin: '4px 0' }
+  });
+
+  var dlScaleLabel = ui.Label('2. Choose Resolution / Scale:', {
+    fontSize: '11px', fontWeight: 'bold', color: '#059669', margin: '8px 0 2px 0'
+  });
+  
+  var dlScaleSelect = ui.Select({
+    items: [
+      '10 meters (Full resolution - May exceed 50MB)',
+      '20 meters (Recommended - Safe, 4x smaller)',
+      '30 meters (Medium resolution - 9x smaller)',
+      '60 meters (Coarse resolution)'
+    ],
+    value: '20 meters (Recommended - Safe, 4x smaller)',
+    style: { stretch: 'horizontal', margin: '4px 0' }
+  });
+
   var expRasterBtn = ui.Button({
-    label: '🗺️ Direct GeoTIFF (All Bands for ArcGIS)',
+    label: '🗺️ Direct GeoTIFF Map (Download)',
     onClick: function () {
       if (!processedComposite) { exportStatus.setValue('Run analysis first'); return; }
 
       exportStatus.setValue('⏳ Generating direct GeoTIFF zip download...');
       exportStatus.style().set('color', '#d97706');
 
-      var description = 'Mimosa_Indices_' + selectedStart.replace(/-/g, '');
-      var selectedBands = ['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
+      // 1. Resolve selected bands
+      var bandChoice = dlBandSelect.getValue();
+      var selectedBands = [];
+      var filenameSuffix = '';
+      var filePerBand = true;
+
+      if (bandChoice === 'All 10 Spectral Indices (ZIP)') {
+        selectedBands = ['NDWI', 'NDTI', 'NDCI', 'TSI', 'AWEIn', 'SABI', 'FAI', 'CI', 'EVI', 'MSAVI'];
+        filenameSuffix = 'All_Indices';
+        filePerBand = true;
+      } else {
+        filePerBand = false;
+        if (bandChoice.indexOf('NDWI') !== -1) { selectedBands = ['NDWI']; filenameSuffix = 'NDWI'; }
+        else if (bandChoice.indexOf('NDTI') !== -1) { selectedBands = ['NDTI']; filenameSuffix = 'NDTI'; }
+        else if (bandChoice.indexOf('NDCI') !== -1) { selectedBands = ['NDCI']; filenameSuffix = 'NDCI'; }
+        else if (bandChoice.indexOf('TSI') !== -1) { selectedBands = ['TSI']; filenameSuffix = 'TSI'; }
+        else if (bandChoice.indexOf('AWEIn') !== -1) { selectedBands = ['AWEIn']; filenameSuffix = 'AWEIn'; }
+        else if (bandChoice.indexOf('SABI') !== -1) { selectedBands = ['SABI']; filenameSuffix = 'SABI'; }
+        else if (bandChoice.indexOf('FAI') !== -1) { selectedBands = ['FAI']; filenameSuffix = 'FAI'; }
+        else if (bandChoice.indexOf('CI') !== -1) { selectedBands = ['CI']; filenameSuffix = 'CI'; }
+        else if (bandChoice.indexOf('EVI') !== -1) { selectedBands = ['EVI']; filenameSuffix = 'EVI'; }
+        else if (bandChoice.indexOf('MSAVI') !== -1) { selectedBands = ['MSAVI']; filenameSuffix = 'MSAVI'; }
+      }
+
+      // 2. Resolve selected scale
+      var scaleChoice = dlScaleSelect.getValue();
+      var scaleVal = 20;
+      if (scaleChoice.indexOf('10 meters') !== -1) scaleVal = 10;
+      else if (scaleChoice.indexOf('20 meters') !== -1) scaleVal = 20;
+      else if (scaleChoice.indexOf('30 meters') !== -1) scaleVal = 30;
+      else if (scaleChoice.indexOf('60 meters') !== -1) scaleVal = 60;
+
+      var description = 'Mimosa_' + filenameSuffix + '_' + selectedStart.replace(/-/g, '') + '_' + scaleVal + 'm';
       var imageToExport = processedComposite.select(selectedBands);
 
-      // Standard GEE task (for IDE fallback)
+      // Standard GEE task (for background Drive exporting at high res if needed)
       Export.image.toDrive({
         image: imageToExport,
         description: description,
-        folder: DRIVE_FOLDER, region: activeROI, scale: 10, maxPixels: 1e10, fileFormat: 'GeoTIFF'
+        folder: DRIVE_FOLDER, region: activeROI, scale: scaleVal, maxPixels: 1e10, fileFormat: 'GeoTIFF'
       });
 
-      // Direct Web App download link (separate bands filePerBand: true)
+      // Direct Web App download link (with strict 50MB error catching)
       imageToExport.getDownloadURL({
         name: description,
-        scale: 10,
-        crs: 'EPSG:4326', // WGS 84 Projection for clean ArcGIS importing
+        scale: scaleVal,
+        crs: 'EPSG:4326', // WGS 84 Projection for clean ArcGIS/QGIS importing
         region: activeROI,
         format: 'GEO_TIFF',
-        filePerBand: true // Pack separate band files (NDWI.tif, NDTI.tif, etc.) inside ZIP
+        filePerBand: filePerBand // Pack separate band files inside ZIP if multi-band
       }, function (url, err) {
         if (err) {
-          exportStatus.setValue('✕ Error generating download: ' + err);
+          var errMsg = err.toString();
+          if (errMsg.indexOf('50428800') !== -1 || errMsg.indexOf('exceeds') !== -1 || errMsg.indexOf('limit') !== -1 || errMsg.indexOf('too large') !== -1) {
+            exportStatus.setValue('✕ GEE 50MB Limit Exceeded! Try 20m scale or downloading a single index.');
+          } else {
+            exportStatus.setValue('✕ Error generating download: ' + err);
+          }
           exportStatus.style().set('color', '#ef4444');
           return;
         }
@@ -1162,6 +1236,8 @@ function boot() {
     ui.Label('Generate direct browser download links for ArcGIS, QGIS and spreadsheets.', {
       fontSize: '10px', color: '#6b7280'
     }),
+    dlBandLabel, dlBandSelect,
+    dlScaleLabel, dlScaleSelect,
     expRasterBtn, expCSVBtn, expStatsBtn, downloadLinksPanel, exportStatus
   ], false);
   nav.add(exportSection.panel);

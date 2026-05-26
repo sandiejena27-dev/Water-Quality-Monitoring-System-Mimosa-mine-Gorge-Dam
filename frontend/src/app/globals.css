@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mimosa-bg: #090d16;
+  --color-mimosa-card: #111827;
+  --color-mimosa-border: #1f2937;
+  --color-mimosa-cyan: #22d3ee;
+  
+  --font-inter: 'Inter', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 9, 13, 22;
+  --background-end-rgb: 9, 13, 22;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  font-family: var(--font-inter), sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-mimosa-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-mimosa-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Leaflet Custom Matte Dark Styles */
+.leaflet-container {
+  background: #090d16 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(17, 24, 39, 0.95) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(34, 211, 238, 0.2) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(8px);
+  padding: 2px !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border-left: 1px solid rgba(34, 211, 238, 0.2) !important;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.2) !important;
+}
+
+.leaflet-bar {
+  border: 1px solid #1f2937 !important;
+  box-shadow: none !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+}
+
+.leaflet-bar a {
+  background: #111827 !important;
+  color: #22d3ee !important;
+  border-bottom: 1px solid #1f2937 !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-bar a:hover {
+  background: #1e293b !important;
+  color: #22d3ee !important;
+}
+
+.glow-cyan {
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+}
+
+.glow-border {
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.08);
+}
